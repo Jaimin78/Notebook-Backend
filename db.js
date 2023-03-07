@@ -7,7 +7,7 @@ const connectDb = () => {
     if (err) {
       console.log(err)
     }else{
-      console.log("Connected Successfully to DB")
+      console.log("Connected Successfully to Database")
     }
   })
 }
