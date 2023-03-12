@@ -9,14 +9,14 @@ const router = express.Router();
 //SECRET TOKEN
 const JWT_SECRET = 'jaiminiswèbdev';
 
-//Post req to create a user : "/api/auth/createuser" without sign up
+//ROUTE 1: Post req to create a user : "/api/auth/createuser" without sign up
 router.post('/createuser', [
     //Validating Data with custom error msg
     body('name', 'Enter valid Name').isLength({ min: 3 }),
     body('password', 'Enter valid password').isLength({ min: 5 }),
     body('email', 'Enter valid Email').isEmail()
 ], async (req, res) => {
-    //If there are error return bed requests and error
+    //If there are error in input return bed requests and error
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json(
@@ -27,7 +27,7 @@ router.post('/createuser', [
     try{
       let user = await User.findOne({email: req.body.email})
       if(user){
-        return res.status(400).json({error: "Wrong Credential"})
+        return res.status(400).json({error: "Wrong Credential"});
       }
       
       const salt = await bcrypt.genSalt(10);
@@ -49,18 +49,18 @@ router.post('/createuser', [
       
     }catch(error){
        console.log(error.message);
-       res.status(500).send("Internal Server Error")
+       res.status(500).send("Internal Server Error");
     }
 })
 
 
 
-//POST Req to Login Validation: /api/auth/login 
+//ROUTE 2: POST Req to Login Validation: /api/auth/login 
 router.post('/login', [
     body('email', 'Wrong Credential').isEmail(),
     body('password', 'Wrong Credential').exists()
 ],async (req,res) => {
-  //If there are error return bed requests and error
+  //If there are error in input return bed requests and error
   const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json(
@@ -72,11 +72,11 @@ router.post('/login', [
     try{
       let user = await User.findOne({email});
       if(!user){
-        return res.status(400).json({Error:"Please try to login with correct Credential"})
+        return res.status(400).json({Error:"Please try to login with correct Credential"});
       }
       let passwordCompare = await bcrypt.compare(password, user.password)
       if(!passwordCompare){     
-        return res.status(400).json({Error:"Please try to login with correct Credential"})
+        return res.status(400).json({Error:"Please try to login with correct Credential"});
       }
       
       const data= {
@@ -90,13 +90,13 @@ router.post('/login', [
       
     }catch(error){
        console.log(error.message);
-       res.status(500).send("Internal Server Error")
+       res.status(500).send("Internal Server Error");
     }
   
 })
 
 
-//POST Req to get User data : "api/auth/getuser" login required 
+//ROUTE 3: POST Req to get User data : "api/auth/getuser" login required 
 router.post('/getuser',fetchuser, async (req,res) => {
   try{
     let userId = req.user.id;
@@ -105,7 +105,7 @@ router.post('/getuser',fetchuser, async (req,res) => {
     res.send(user)
   }catch(error){
        console.log(error.message);
-       res.status(500).send("Internal Server Error")
+       res.status(500).send("Internal Server Error");
     }
   
 })
